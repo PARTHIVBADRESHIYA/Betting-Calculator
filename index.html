@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Cricket Arbitrage Betting Calculator</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    input { margin: 5px; padding: 5px; }
+    .result { margin-top: 15px; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+<h2>Cricket Arbitrage Betting Calculator</h2>
+
+<label>Investment Amount (₹):</label>
+<input type="number" id="investment" value="500"><br>
+
+<label>Back Odds - Team A (e.g., SRH):</label>
+<input type="number" id="oddsA" value="1.85"><br>
+
+<label>Back Odds - Team B (e.g., DC):</label>
+<input type="number" id="oddsB" value="4"><br>
+
+<button onclick="calculate()">Calculate</button>
+
+<div class="result" id="result"></div>
+
+<script>
+function calculate() {
+  let investment = parseFloat(document.getElementById("investment").value);
+  let oddsA = parseFloat(document.getElementById("oddsA").value);
+  let oddsB = parseFloat(document.getElementById("oddsB").value);
+
+  let probA = 1 / oddsA;
+  let probB = 1 / oddsB;
+  let totalProb = probA + probB;
+
+  if (totalProb >= 1) {
+    document.getElementById("result").innerHTML = "❌ No Arbitrage: Total implied probability is " + totalProb.toFixed(4);
+    return;
+  }
+
+  let stakeA = investment * probA / totalProb;
+  let stakeB = investment * probB / totalProb;
+
+  let profitA = (stakeA * oddsA - investment).toFixed(2);
+  let profitB = (stakeB * oddsB - investment).toFixed(2);
+
+  document.getElementById("result").innerHTML = `
+    ✅ Arbitrage Opportunity Found!<br>
+    Stake on Team A: ₹${stakeA.toFixed(2)}<br>
+    Stake on Team B: ₹${stakeB.toFixed(2)}<br>
+    Guaranteed Profit: ₹${profitA} (if Team A wins) OR ₹${profitB} (if Team B wins)<br>
+    Total Implied Probability: ${totalProb.toFixed(4)}
+  `;
+}
+</script>
+
+</body>
+</html>
